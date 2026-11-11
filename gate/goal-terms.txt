@@ -1,0 +1,48 @@
+# Goal terms (coordinator-only): words that reveal the suite's shape to a worker.
+# Scan a sandbox's method files with this, never its examples/ (client-style inputs may say "sessions").
+suite
+boot camp
+bootcamp
+pipeline
+upstream
+downstream
+later stage
+later stages
+later skill
+later skills
+next skill
+next stage
+hand-off
+handoff
+eight skills
+8 skills
+break-down-course-goal
+define-topic-card
+assign-topics-to-sessions
+design-lab
+design-demo
+design-lecture
+generate-curriculum
+review-feedback
+topic card
+topic cards
+lab
+labs
+session
+sessions
+demo
+demos
+lecture
+slide
+slides
+curriculum
+planner
+run sheet
+homework
+=h2
+=h3
+=h4
+=h5
+=h6
+=h7
+=h8

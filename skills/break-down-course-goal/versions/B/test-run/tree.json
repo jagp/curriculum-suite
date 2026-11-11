@@ -1,0 +1,196 @@
+{
+  "schema": "h1-tree/1",
+  "goal": "Each team lead uses Claude to draft the weekly team report from the team's task tracker and checks every line against it before sending.",
+  "root": "N1",
+  "nodes": [
+    {
+      "id": "N1",
+      "skill": "Use Claude to draft the weekly team report from the team's task tracker, then check every line against the tracker before sending it",
+      "parent": null,
+      "prereqs": []
+    },
+    {
+      "id": "N2",
+      "skill": "Produce a weekly report draft with Claude from a tracker export",
+      "parent": "N1",
+      "prereqs": [],
+      "serves": [
+        "W1",
+        "W2",
+        "C1"
+      ]
+    },
+    {
+      "id": "N3",
+      "skill": "Check every line of the Claude draft against the tracker export and flag each line the tracker does not support, noting the tracker row it was checked against",
+      "parent": "N1",
+      "prereqs": [
+        "N2"
+      ],
+      "serves": [
+        "W3",
+        "C2"
+      ]
+    },
+    {
+      "id": "N6",
+      "skill": "Open a conversation with Claude and send it a written request",
+      "parent": "N2",
+      "prereqs": [],
+      "floor": {
+        "reason": "inputs_stop",
+        "detail": "Profile says participants are new to Claude; the inputs do not say which Claude product they use or how they get access, so nothing earlier can be derived."
+      }
+    },
+    {
+      "id": "N4",
+      "skill": "Give Claude the tracker export as the source to draft from, by attaching or pasting it into the conversation",
+      "parent": "N2",
+      "prereqs": [
+        "N6"
+      ],
+      "floor": {
+        "reason": "inputs_stop",
+        "detail": "Remaining prerequisites are already nodes: N6. The inputs do not say who produces the tracker export or in what form, and exporting happens outside Claude, so it is a gap, not a node."
+      },
+      "data": [
+        {
+          "what": "Tracker export used for the lead's real weekly report",
+          "source": "read-only",
+          "quote": "Tracker exports are read-only copies of real data; nothing is written back to the tracker."
+        },
+        {
+          "what": "Tracker file used for practice reports",
+          "source": "sample",
+          "quote": "Practice reports use the sample tracker file supplied by the presenter."
+        }
+      ],
+      "claims": [
+        {
+          "text": "Claude can read a tracker export that is attached to or pasted into a conversation.",
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "N5",
+      "skill": "Tell Claude what the weekly report must contain and how it should read",
+      "parent": "N2",
+      "prereqs": [
+        "N6"
+      ],
+      "floor": {
+        "reason": "profile",
+        "detail": "Profile: team leads already write the weekly report by hand, so they know what it must contain; remaining prerequisites are already nodes: N6."
+      }
+    },
+    {
+      "id": "N7",
+      "skill": "Ask Claude for a first draft, then tell it what to change and judge whether each revision is better",
+      "parent": "N2",
+      "prereqs": [
+        "N4",
+        "N5"
+      ],
+      "floor": {
+        "reason": "profile",
+        "detail": "Profile: team leads already write the weekly report by hand, so they can judge a draft and say what to change; remaining prerequisites are already nodes: N4, N5."
+      },
+      "claims": [
+        {
+          "text": "Claude revises its own draft in response to follow-up requests in the same conversation.",
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "N8",
+      "skill": "Ask Claude to list, for each line of its draft, the tracker export row the line is based on",
+      "parent": "N3",
+      "prereqs": [
+        "N4"
+      ],
+      "floor": {
+        "reason": "profile",
+        "detail": "Remaining prerequisites are already nodes: N4 (and the draft, N2). Leads write the report by hand, so naming what a line claims is familiar."
+      },
+      "claims": [
+        {
+          "text": "Claude can point to the row of a supplied file that a line of its draft is based on.",
+          "verify": true
+        }
+      ]
+    },
+    {
+      "id": "N9",
+      "skill": "Compare each draft line with the tracker row Claude pointed to and decide whether the row supports the line",
+      "parent": "N3",
+      "prereqs": [
+        "N8"
+      ],
+      "floor": {
+        "reason": "domain_knowledge",
+        "detail": "Glossary: the task tracker is the tool the team logs its work in, so leads can read their own team's rows. Reading status values depends on 'status code', which is UNRESOLVED (see gaps)."
+      },
+      "data": [
+        {
+          "what": "Tracker export the draft is checked against",
+          "source": "read-only",
+          "quote": "Tracker exports are read-only copies of real data; nothing is written back to the tracker."
+        }
+      ]
+    },
+    {
+      "id": "N10",
+      "skill": "Flag each line the tracker does not support and record the tracker row it was checked against",
+      "parent": "N3",
+      "prereqs": [
+        "N9"
+      ],
+      "floor": {
+        "reason": "profile",
+        "detail": "Profile: team leads already write the weekly report by hand, so marking one of its lines as unsupported needs nothing new; remaining prerequisites are already nodes: N9."
+      }
+    }
+  ],
+  "leaf_order": [
+    "N6",
+    "N4",
+    "N5",
+    "N7",
+    "N8",
+    "N9",
+    "N10"
+  ],
+  "gaps": [
+    {
+      "kind": "undefined_term",
+      "term": "status code",
+      "detail": "Glossary marks it UNRESOLVED: the tracker's status values are not yet listed. Checking a line that reports a task's status (N9) depends on it."
+    },
+    {
+      "kind": "undefined_term",
+      "term": "line",
+      "detail": "The goal, W3 and C2 require checking 'every line' and flagging a line, but the glossary does not say what counts as a line of the report (a sentence, a bullet, an item)."
+    },
+    {
+      "kind": "undefined_term",
+      "term": "tracker export",
+      "detail": "C1 and the constraints use 'tracker export', but the glossary does not define its form or contents (which fields, which period)."
+    },
+    {
+      "kind": "other",
+      "detail": "The inputs do not say who produces the tracker export or how. Exporting is done outside Claude, so it is not a node; N4 stops here."
+    },
+    {
+      "kind": "other",
+      "detail": "The inputs do not say which Claude product or surface participants use, or how they get access. N6 stops here."
+    }
+  ],
+  "set_aside": [
+    {
+      "constraint": "Two 90-minute sessions.",
+      "reason": "Delivery constraint (time and session count); the tree is about capability only, so it does not size, split or merge any node."
+    }
+  ]
+}

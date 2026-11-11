@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "common.schema.json",
+  "title": "Shared definitions",
+  "$defs": {
+    "text": { "type": "string", "minLength": 1 },
+    "cite": { "type": "string", "pattern": "^https://\\S+$" },
+    "claim": {
+      "description": "A statement about what a Claude product can do. It carries verify: true unless a current doc is cited by URL.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": { "$ref": "#/$defs/text" },
+        "verify": { "const": true },
+        "cite": { "$ref": "#/$defs/cite" }
+      },
+      "oneOf": [
+        { "required": ["verify"], "not": { "required": ["cite"] } },
+        { "required": ["cite"], "not": { "required": ["verify"] } }
+      ]
+    }
+  }
+}

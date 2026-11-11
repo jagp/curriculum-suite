@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "deny": [
+      "Read(./HANDOFF.md)",
+      "Read(./runs/**)",
+      "Read(./break-down-course-goal/alternates/**)",
+      "Read(./planning-manual-feedback-fo-learning*)",
+      "Bash(cat ./HANDOFF.md*)",
+      "Bash(cat HANDOFF.md*)",
+      "Bash(cat runs/*)",
+      "Bash(cat ./runs/*)"
+    ]
+  }
+}

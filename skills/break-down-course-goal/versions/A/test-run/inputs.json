@@ -1,0 +1,28 @@
+{
+  "schema": "h0-inputs/1",
+  "client": "Example Co",
+  "goal": "Each team lead uses Claude to draft the weekly team report from the team's task tracker and checks every line against it before sending.",
+  "weekly_goals": [
+    { "id": "W1", "goal": "Get comfortable asking Claude for a first draft and revising it." },
+    { "id": "W2", "goal": "Draft the weekly report from tracker data." },
+    { "id": "W3", "goal": "Check a draft line by line against its source before sending." }
+  ],
+  "criteria": [
+    { "id": "C1", "check": "Each lead produces a report draft from a tracker export with Claude.", "pass_if": "a draft exists for every lead" },
+    { "id": "C2", "check": "Each lead flags at least one line the tracker does not support.", "pass_if": "one flagged line per lead, with the tracker row it was checked against" }
+  ],
+  "constraints": [
+    "Two 90-minute sessions.",
+    "Tracker exports are read-only copies of real data; nothing is written back to the tracker.",
+    "Practice reports use the sample tracker file supplied by the presenter."
+  ],
+  "participant_profile": {
+    "learner": "Team leads who already write the weekly report by hand",
+    "starting_level": "New to Claude"
+  },
+  "glossary": {
+    "weekly report": "A one-page summary of the team's week, sent every Friday.",
+    "task tracker": "The tool the team logs its work in.",
+    "status code": "UNRESOLVED: the tracker's status values are not yet listed"
+  }
+}

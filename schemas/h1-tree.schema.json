@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "h1-tree.schema.json",
+  "title": "tree.json",
+  "description": "A tree of what participants must DO with Claude, rooted at the course goal. A parent needs all its children; a node also needs its prereqs. Leaves are nodes with no children. No time or format fields.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "goal", "root", "nodes", "leaf_order", "gaps", "set_aside"],
+  "properties": {
+    "schema": { "const": "h1-tree/1" },
+    "goal": { "description": "The inputs' goal, copied exactly.", "$ref": "common.schema.json#/$defs/text" },
+    "root": { "$ref": "#/$defs/node_id" },
+    "nodes": { "type": "array", "minItems": 2, "items": { "$ref": "#/$defs/node" } },
+    "leaf_order": {
+      "description": "Every leaf exactly once, in an order where nothing a leaf needs comes after it.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/node_id" }
+    },
+    "gaps": { "type": "array", "items": { "$ref": "#/$defs/gap" } },
+    "set_aside": {
+      "description": "Input constraints deliberately not used to shape the tree, each with the reason.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["constraint", "reason"],
+        "properties": {
+          "constraint": { "description": "Copied exactly from inputs.constraints.", "$ref": "common.schema.json#/$defs/text" },
+          "reason": { "$ref": "common.schema.json#/$defs/text" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "node_id": { "type": "string", "pattern": "^N[0-9]+$" },
+    "node": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "skill", "parent", "prereqs"],
+      "properties": {
+        "id": { "$ref": "#/$defs/node_id" },
+        "skill": { "description": "An action the participant performs, not a topic.", "$ref": "common.schema.json#/$defs/text" },
+        "parent": { "description": "null for the root only.", "oneOf": [{ "$ref": "#/$defs/node_id" }, { "type": "null" }] },
+        "prereqs": {
+          "description": "Other nodes that must be possible before this one (shared skills linked, not duplicated).",
+          "type": "array",
+          "items": { "$ref": "#/$defs/node_id" }
+        },
+        "serves": {
+          "description": "Required on the root's children, forbidden elsewhere: the weekly goal and criterion ids this branch serves.",
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[WC][0-9]+$" }
+        },
+        "floor": {
+          "description": "Required on leaves, forbidden elsewhere: why splitting stops here. already_a_node = everything it still needs is another node, listed in prereqs.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reason", "detail"],
+          "properties": {
+            "reason": { "enum": ["profile", "domain_knowledge", "inputs_stop", "already_a_node"] },
+            "detail": { "$ref": "common.schema.json#/$defs/text" }
+          }
+        },
+        "data": {
+          "description": "Data this node needs, and where it comes from according to the inputs.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["what", "source"],
+            "properties": {
+              "what": { "$ref": "common.schema.json#/$defs/text" },
+              "source": { "enum": ["live", "read-only", "sample", "own", "UNRESOLVED"] },
+              "quote": { "description": "Required unless source is UNRESOLVED: the inputs text that states this source, copied exactly.", "$ref": "common.schema.json#/$defs/text" }
+            }
+          }
+        },
+        "claims": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/claim" } }
+      }
+    },
+    "gap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "detail"],
+      "properties": {
+        "kind": { "enum": ["undefined_term", "data_provenance", "other"] },
+        "term": { "description": "Required for undefined_term.", "$ref": "common.schema.json#/$defs/text" },
+        "node": { "description": "Required for data_provenance.", "$ref": "#/$defs/node_id" },
+        "detail": { "$ref": "common.schema.json#/$defs/text" }
+      }
+    }
+  }
+}

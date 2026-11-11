@@ -1,0 +1,122 @@
+{
+  "schema": "h1-tree/1",
+  "goal": "Each team lead uses Claude to draft the weekly team report from the team's task tracker and checks every line against it before sending.",
+  "root": "N1",
+  "nodes": [
+    {
+      "id": "N1",
+      "skill": "Draft the weekly team report from the task tracker with Claude and check every line against the tracker before sending it.",
+      "parent": null,
+      "prereqs": []
+    },
+    {
+      "id": "N2",
+      "skill": "Draft the weekly report with Claude from a tracker export.",
+      "parent": "N1",
+      "prereqs": [],
+      "serves": ["W1", "W2", "C1"]
+    },
+    {
+      "id": "N3",
+      "skill": "Check each line of Claude's draft against the tracker export and flag every line the export does not support, naming the tracker row it was checked against.",
+      "parent": "N1",
+      "prereqs": ["N2"],
+      "serves": ["W3", "C2"],
+      "floor": {
+        "reason": "profile",
+        "detail": "Profile: \"Team leads who already write the weekly report by hand\" - judging whether a report line matches the team's logged work is what they already do; the new part (having a Claude draft to check) is linked as prereq N2, not duplicated."
+      },
+      "data": [
+        {
+          "what": "Tracker export the draft is checked against (real work)",
+          "source": "read-only",
+          "quote": "Tracker exports are read-only copies of real data; nothing is written back to the tracker."
+        },
+        {
+          "what": "Tracker file the draft is checked against (practice)",
+          "source": "sample",
+          "quote": "Practice reports use the sample tracker file supplied by the presenter."
+        }
+      ]
+    },
+    {
+      "id": "N4",
+      "skill": "Ask Claude for a first draft by stating what the document is, who reads it and what it must contain.",
+      "parent": "N2",
+      "prereqs": [],
+      "floor": {
+        "reason": "inputs_stop",
+        "detail": "Profile says \"New to Claude\", but the inputs do not name which Claude product or surface participants use; any finer step (opening it, where to type) would assume one. Reported as a gap."
+      },
+      "claims": [
+        { "text": "Claude produces a written first draft from a plain-language request.", "verify": true }
+      ]
+    },
+    {
+      "id": "N5",
+      "skill": "Give Claude a tracker export as the source it must draft the report from.",
+      "parent": "N2",
+      "prereqs": ["N4"],
+      "floor": {
+        "reason": "inputs_stop",
+        "detail": "The inputs do not state the export's file format or how it reaches Claude (attached file or pasted text), so no finer step can be justified. Reported as gaps."
+      },
+      "data": [
+        {
+          "what": "Tracker export used as the draft's source (real work)",
+          "source": "read-only",
+          "quote": "Tracker exports are read-only copies of real data; nothing is written back to the tracker."
+        },
+        {
+          "what": "Tracker file used as the draft's source (practice)",
+          "source": "sample",
+          "quote": "Practice reports use the sample tracker file supplied by the presenter."
+        }
+      ],
+      "claims": [
+        { "text": "Claude can take a tracker export, supplied as an attached file or pasted text, as source material in a conversation.", "verify": true }
+      ]
+    },
+    {
+      "id": "N6",
+      "skill": "Revise Claude's draft by telling it what to change and reading the revised version.",
+      "parent": "N2",
+      "prereqs": ["N4"],
+      "floor": {
+        "reason": "profile",
+        "detail": "Profile: \"Team leads who already write the weekly report by hand\" - deciding what a report needs changed is existing skill; asking Claude is linked as prereq N4, not duplicated."
+      },
+      "claims": [
+        { "text": "Claude revises its own earlier draft in the same conversation when told what to change.", "verify": true }
+      ]
+    }
+  ],
+  "leaf_order": ["N4", "N5", "N6", "N3"],
+  "gaps": [
+    {
+      "kind": "undefined_term",
+      "term": "line",
+      "detail": "The goal says \"checks every line\" but the glossary does not define what counts as a line of the weekly report (sentence, bullet, figure). N3 depends on it; not defined here."
+    },
+    {
+      "kind": "undefined_term",
+      "term": "tracker export",
+      "detail": "Used in criterion C1 and the constraints; the glossary defines \"task tracker\" but not the export (its format or contents). N3 and N5 depend on it."
+    },
+    {
+      "kind": "undefined_term",
+      "term": "status code",
+      "detail": "The glossary marks it UNRESOLVED (\"the tracker's status values are not yet listed\"). Not used in the goal, weekly goals or constraints, so no node depends on it."
+    },
+    {
+      "kind": "other",
+      "detail": "The inputs do not name which Claude product or surface participants use. N4 and N5 stop splitting here, and their product claims carry verify: true."
+    }
+  ],
+  "set_aside": [
+    {
+      "constraint": "Two 90-minute sessions.",
+      "reason": "Delivery constraint (time); the tree is about capability only, so it does not shape any node."
+    }
+  ]
+}
