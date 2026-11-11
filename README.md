@@ -12,6 +12,7 @@ has a JSON schema plus a validator.
 | `specs/` | Task specs handed to worker sessions |
 | `schemas/` | Stage contracts (`*.schema.json`), extra checks, `validate.py`, tests |
 | `gate/` | Term gate and sandbox builder for goal-blind worker runs |
+| `inputs/` | Drop-in folder for run inputs (ignored by git except its README) |
 | `references/` | Method references named by specs |
 
 ## Working rules
@@ -19,14 +20,16 @@ has a JSON schema plus a validator.
 `CLAUDE.md` defines two session roles (coordinator and worker) and the rules each
 follows. Read it before starting a session here.
 
-## Client data stays out
+## Inputs
 
-This repo holds methods only. Client inputs, run fixtures and the client terms list
-(`gate/client-terms.txt`, one term per line) are supplied locally and are ignored by git.
-Before committing, check the tree with:
+This repo holds methods only. Everything a run consumes (client inputs, fixtures, the
+client terms list) goes in the `inputs/` drop-in folder, which git ignores apart from its
+README. See [`inputs/README.md`](inputs/README.md) for what goes where.
+
+To check that no tracked file carries a term from your inputs:
 
 ```bash
-python gate/term_gate.py gate/client-terms.txt $(git ls-files)
+python gate/term_gate.py inputs/client-terms.txt $(git ls-files)
 ```
 
 ## Tests

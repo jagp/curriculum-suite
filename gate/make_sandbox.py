@@ -74,9 +74,12 @@ def build(skill, sandbox):
         shutil.copy(REPO / f"specs/examples/{name}", sandbox / f"examples/{name}")
 
 
-def scan(terms_name, paths, allow=()):
-    """Scan paths for a terms file's terms, ignoring allowed ones. Returns hit lines."""
-    terms_file = (REPO / "gate" / terms_name).resolve()
+def scan(terms_path, paths, allow=()):
+    """Scan paths for a terms file's terms, ignoring allowed ones. Returns hit lines.
+
+    terms_path is repo-relative: the client list is a run input (inputs/), the goal list ships in gate/.
+    """
+    terms_file = (REPO / terms_path).resolve()
     patterns = [(term, pattern) for term, pattern in load_patterns(terms_file) if term not in allow]
     hits = []
     for file in files_under(paths, terms_file):
@@ -91,7 +94,7 @@ def main():
     skill, sandbox = sys.argv[1], Path(sys.argv[2]).resolve()
     build(skill, sandbox)
     method_files = [p for p in sandbox.iterdir() if p.name != "examples"]
-    hits = scan("client-terms.txt", [sandbox]) + scan("goal-terms.txt", method_files, allow={skill})
+    hits = scan("inputs/client-terms.txt", [sandbox]) + scan("gate/goal-terms.txt", method_files, allow={skill})
     if hits:
         print(f"FAIL sandbox {sandbox} ({len(hits)} hits)")
         print("\n".join(f"  - {hit}" for hit in hits))

@@ -1,0 +1,1 @@
+- 2026-11-06 break-down-course-goal: picked A (tree-A.json -> tree.json). Reason: build test: only A produced

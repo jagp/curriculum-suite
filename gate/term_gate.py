@@ -4,9 +4,10 @@ Usage:  python gate/term_gate.py <terms-file> <path> [<path> ...]
 Exit 0 = clean, 1 = a term was found (one line per hit), 2 = usage error.
 
 Two terms files, one script:
-  client-terms.txt  client names, people, systems, domain nouns. Methods must stay client-agnostic:
-                    client data reaches a skill only at runtime, through its inputs file.
-  goal-terms.txt    the suite's shape (other skills, hand-offs, the course format). A worker must
+  inputs/client-terms.txt  client names, people, systems, domain nouns. Methods must stay client-agnostic:
+                    client data reaches a skill only at runtime, through its inputs file. A run input,
+                    so it lives in the ignored inputs/ drop-in folder.
+  gate/goal-terms.txt  the suite's shape (other skills, hand-offs, the course format). A worker must
                     see only its own skill's requirements, so its sandbox may not name these.
 Terms files are coordinator-only and never enter a sandbox.
 """
