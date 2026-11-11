@@ -1,0 +1,29 @@
+# Session tooling state (per-machine, never shared)
+.remember/
+.claude/.omnilog/
+.claude/settings.local.json
+.claude/worktrees/
+
+# Coordinator-only and client material: lives locally, never in this repo.
+# The suite is client-agnostic; client data reaches a skill only at runtime.
+HANDOFF*.md
+decisions.md
+eval-*.md
+history/
+distill-input/
+fixture/
+gate/client-terms.txt
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
