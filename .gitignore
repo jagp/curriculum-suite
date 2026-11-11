@@ -4,15 +4,14 @@
 .claude/settings.local.json
 .claude/worktrees/
 
-# Coordinator-only and client material: lives locally, never in this repo.
-# The suite is client-agnostic; client data reaches a skill only at runtime.
-HANDOFF*.md
-decisions.md
-eval-*.md
-history/
-distill-input/
-fixture/
-gate/client-terms.txt
+# Drop-in folder for run inputs: everything inside stays local except its README.
+# (`inputs/*`, not `inputs/`, so the README can be re-included.)
+/inputs/*
+!/inputs/README.md
+
+# Coordinator working notes (local; CLAUDE.md points sessions at them)
+/HANDOFF*.md
+/decisions.md
 
 # Python
 __pycache__/
